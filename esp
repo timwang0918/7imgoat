@@ -1,0 +1,127 @@
+local function SetupESP(player)
+    if player == LocalPlayer then return end
+    local function CleanESP()
+        if ESPTable[player] then 
+            pcall(function() ESPTable[player].Highlight:Destroy() end)
+            pcall(function() ESPTable[player].Box:Destroy() end)
+            pcall(function() ESPTable[player].BarGui:Destroy() end)
+            pcall(function() ESPTable[player].HeadLine:Destroy() end)
+            pcall(function() ESPTable[player].HeadLineAnchor:Destroy() end)
+            pcall(function() ESPTable[player].NameGui:Destroy() end) 
+            ESPTable[player] = nil
+        end
+    end
+
+    local function CreateElements(char)
+        CleanESP() if not char then return end
+        task.spawn(function()
+            local head = char:WaitForChild("Head", 5)
+            local hrp = char:WaitForChild("HumanoidRootPart", 5)
+            if not hrp or not head then return end 
+
+            local hl = Instance.new("Highlight")
+            hl.FillTransparency = 0.5
+            hl.OutlineColor = Color3.fromRGB(255, 255, 255)
+            hl.Parent = char
+
+            local bg = Instance.new("BillboardGui")
+            bg.AlwaysOnTop = true
+            bg.Size = UDim2.new(4.5, 0, 6, 0)
+            bg.Adornee = hrp
+            bg.Parent = ScreenGui
+
+            local box = Instance.new("Frame")
+            box.Size = UDim2.new(1, 0, 1, 0)
+            box.BackgroundTransparency = 1
+            box.Parent = bg
+            local stroke = Instance.new("UIStroke")
+            stroke.Thickness = 1.5
+            stroke.Color = Color3.fromRGB(255, 255, 255)
+            stroke.Parent = box
+
+            -- ⚠️ 修復：血條原本是 Box ESP 的子物件,Box 關閉時血條也會被一併隱藏。
+            -- 改為獨立的 BillboardGui,讓 Health 開關可以單獨運作,不受 Box ESP 影響
+            local barGui = Instance.new("BillboardGui")
+            barGui.Name = "HealthBarGui"
+            barGui.AlwaysOnTop = true
+            barGui.Size = UDim2.new(4.5, 0, 6, 0)
+            barGui.Adornee = hrp
+            barGui.Parent = ScreenGui
+
+            local healthBar = Instance.new("Frame")
+            healthBar.Size = UDim2.new(0.05, 0, 0.9, 0)
+            healthBar.Position = UDim2.new(-0.1, 0, 0.05, 0)
+            healthBar.BackgroundColor3 = Color3.fromRGB(91, 168, 252)
+            healthBar.Parent = barGui
+
+            -- 天際射線改用 Beam 實作：Beam 支援 ColorSequence,才能真正做出單色/雙色漸層效果
+            local skyAnchorPart = Instance.new("Part")
+            skyAnchorPart.Name = "SkyLineAnchor"
+            skyAnchorPart.Anchored = true
+            skyAnchorPart.CanCollide = false
+            skyAnchorPart.CanQuery = false
+            skyAnchorPart.Transparency = 1
+            skyAnchorPart.Size = Vector3.new(0.1, 0.1, 0.1)
+            skyAnchorPart.Parent = Workspace
+
+            local bottomAtt = Instance.new("Attachment")
+            bottomAtt.Name = "SkyBottomAtt"
+            bottomAtt.Parent = hrp
+
+            local topAtt = Instance.new("Attachment")
+            topAtt.Name = "SkyTopAtt"
+            topAtt.Parent = skyAnchorPart
+
+            local cylinder = Instance.new("Beam")
+            cylinder.Name = "SkyLine"
+            cylinder.Attachment0 = bottomAtt
+            cylinder.Attachment1 = topAtt
+            cylinder.Width0 = 1.2
+            cylinder.Width1 = 1.2
+            cylinder.FaceCamera = true
+            cylinder.LightEmission = 1
+            cylinder.Color = ColorSequence.new(ESPSettings.HeadESPColor1)
+            cylinder.Transparency = NumberSequence.new(1)
+            cylinder.Parent = hrp
+
+            local nameGui = Instance.new("BillboardGui")
+            nameGui.AlwaysOnTop = true
+            nameGui.Size = UDim2.new(0, 200, 0, 30)
+            nameGui.ExtentsOffset = Vector3.new(0, 3.5, 0) 
+            nameGui.Adornee = hrp
+            nameGui.Parent = ScreenGui
+
+            local nameLabel = Instance.new("TextLabel")
+            nameLabel.Size = UDim2.new(1, 0, 1, 0)
+            nameLabel.BackgroundTransparency = 1
+            nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            nameLabel.Font = Enum.Font.SourceSansBold
+            nameLabel.TextSize = 14
+            nameLabel.Text = player.Name
+            nameLabel.Parent = nameGui
+
+            local nameStroke = Instance.new("UIStroke")
+            nameStroke.Thickness = 2
+            nameStroke.Color = Color3.fromRGB(0, 0, 0)
+            nameStroke.Parent = nameLabel
+
+            ESPTable[player] = { 
+                Highlight = hl, 
+                Box = bg, 
+                Bar = healthBar, 
+                BarGui = barGui,
+                HeadLine = cylinder, 
+                HeadLineAnchor = skyAnchorPart,
+                NameGui = nameGui, 
+                NameLabel = nameLabel, 
+                Char = char 
+            }
+        end)
+    end
+
+    if player.Character then CreateElements(player.Character) end
+    table.insert(Connections, player.CharacterAdded:Connect(function(char) task.wait(0.5) CreateElements(char) end))
+    table.insert(Connections, player.CharacterRemoving:Connect(CleanESP))
+end
+for _, p in pairs(Players:GetPlayers()) do SetupESP(p) end
+table.insert(Connections, Players.PlayerAdded:Connect(SetupESP))
