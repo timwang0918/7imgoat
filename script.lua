@@ -938,13 +938,7 @@ AddToggle("隱藏自己名字", "SpoofSelf", MiscPage, 4, false)
 AddToggle("隱藏他人名字", "SpoofOthers", MiscPage, 5, false)
 
 -- 新增的 Misc 按鈕 (霧、光顏色、第三視角)
-AddToggle("🌫️ 霧氣開關 (Fog)", "Fog", MiscPage, 6, false)
-AddToggle("💡 整體光顏色開關", "LightingColorSwitch", MiscPage, 7, false)
-CreateHexColorInput("└─ 光線與霧氣顏色 (Hex):", 8, "LightingColor", MiscPage, nil)
 AddToggle("👁️ 強制第三視角 (Third Person)", "ThirdPerson", MiscPage, 9, false)
-
--- 🌟 Misc Page：動作播放控制模組
-AddToggle("自訂動作播放 (Emote Player)", "EmoteTrack", MiscPage, 6, false)
 
 local EmoteInputFrame = Instance.new("Frame")
 EmoteInputFrame.Size = UDim2.new(1, -30, 0, 36)
