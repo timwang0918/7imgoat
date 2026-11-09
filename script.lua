@@ -50,32 +50,7 @@ local ESPSettings = {
     Noclip = false,
     AutoJump = false,
 
-    -- Misc 配置 (保留原本的)
-    AutoRevive = false,
-    VoidDodge = false,
-    PlayerFOV = 600,
-    SpoofSelf = false,
-    SpoofSelfName = "fate",
-    SpoofOthers = false,
-    SpoofOthersName = " ",
-    
-    -- 🌫️ 新增：霧與光照配置
-    Fog = false,
-    LightingColorSwitch = false,
-    LightingColor = Color3.fromRGB(255, 255, 255),
-    
-    -- 👁️ 新增：第三視角配置
-    ThirdPerson = false,
 
-    -- 🌟 保留原本的動作播放配置
-    EmoteTrack = false,       
-    EmoteID = "14884037146",  
-
-    -- ❄️ 保留原本的世界環境配置
-    Snow = false,                              
-    SnowColor1 = Color3.fromRGB(255, 255, 255), 
-    SnowColor2 = Color3.fromRGB(200, 225, 255)  
-}
 
 local HitParts = {"Head", "HumanoidRootPart", "LeftFoot"}
 local HitPartNames = {"頭部 (Head)", "身體 (Body)", "腳部 (Foot)"}
