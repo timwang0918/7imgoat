@@ -171,7 +171,7 @@ end
 -- 2. GUI 主面板 
 -- ==========================================
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "SLC V1"
+ScreenGui.Name = "7imgoat"
 ScreenGui.Parent = TargetParent
 ScreenGui.ResetOnSpawn = false
 
