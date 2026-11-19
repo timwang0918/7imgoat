@@ -50,7 +50,32 @@ local ESPSettings = {
     Noclip = false,
     AutoJump = false,
 
+    -- Misc 配置 (保留原本的)
+    AutoRevive = false,
+    VoidDodge = false,
+    PlayerFOV = 600,
+    SpoofSelf = false,
+    SpoofSelfName = "fate",
+    SpoofOthers = false,
+    SpoofOthersName = " ",
+    
+    -- 🌫️ 新增：霧與光照配置
+    Fog = false,
+    LightingColorSwitch = false,
+    LightingColor = Color3.fromRGB(255, 255, 255),
+    
+    -- 👁️ 新增：第三視角配置
+    ThirdPerson = false,
 
+    -- 🌟 保留原本的動作播放配置
+    EmoteTrack = false,       
+    EmoteID = "14884037146",  
+
+    -- ❄️ 保留原本的世界環境配置
+    Snow = false,                              
+    SnowColor1 = Color3.fromRGB(255, 255, 255), 
+    SnowColor2 = Color3.fromRGB(200, 225, 255)  
+}
 
 local HitParts = {"Head", "HumanoidRootPart", "LeftFoot"}
 local HitPartNames = {"頭部 (Head)", "身體 (Body)", "腳部 (Foot)"}
@@ -91,7 +116,7 @@ SilentFOVCircle.Transparency = 0.6
 
 -- ❄️ 下雪系統：純視覺天氣特效，跟隨鏡頭產生大範圍降雪
 local SnowEmitterPart = Instance.new("Part")
-SnowEmitterPart.Name = "7imgoat_SnowEmitter"
+SnowEmitterPart.Name = "SLC_SnowEmitter"
 SnowEmitterPart.Size = Vector3.new(120, 1, 120)
 SnowEmitterPart.Transparency = 1
 SnowEmitterPart.Anchored = true
@@ -100,7 +125,7 @@ SnowEmitterPart.CanQuery = false
 SnowEmitterPart.CastShadow = false
 
 local SnowEmitter = Instance.new("ParticleEmitter")
-SnowEmitter.Name = "7imgoat_SnowParticles"
+SnowEmitter.Name = "SLC_SnowParticles"
 SnowEmitter.Texture = "rbxasset://textures/particles/sparkles_main.dds" -- ⚠️ 原本的 snow_storm.dds 不是有效的內建資源路徑,導致粒子無法渲染,已改為確認可用的內建材質
 SnowEmitter.Rate = 0
 SnowEmitter.Lifetime = NumberRange.new(4, 6)
@@ -146,7 +171,7 @@ end
 -- 2. GUI 主面板 
 -- ==========================================
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "7imgoat"
+ScreenGui.Name = "SLC V1"
 ScreenGui.Parent = TargetParent
 ScreenGui.ResetOnSpawn = false
 
@@ -178,7 +203,7 @@ local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 40)
 Title.BackgroundColor3 = Color3.fromRGB(22, 24, 33)
 Title.BorderSizePixel = 0
-Title.Text = "   7imgoat"
+Title.Text = "   SLC V1"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.Font = Enum.Font.SourceSansBold
@@ -913,7 +938,13 @@ AddToggle("隱藏自己名字", "SpoofSelf", MiscPage, 4, false)
 AddToggle("隱藏他人名字", "SpoofOthers", MiscPage, 5, false)
 
 -- 新增的 Misc 按鈕 (霧、光顏色、第三視角)
+AddToggle("🌫️ 霧氣開關 (Fog)", "Fog", MiscPage, 6, false)
+AddToggle("💡 整體光顏色開關", "LightingColorSwitch", MiscPage, 7, false)
+CreateHexColorInput("└─ 光線與霧氣顏色 (Hex):", 8, "LightingColor", MiscPage, nil)
 AddToggle("👁️ 強制第三視角 (Third Person)", "ThirdPerson", MiscPage, 9, false)
+
+-- 🌟 Misc Page：動作播放控制模組
+AddToggle("自訂動作播放 (Emote Player)", "EmoteTrack", MiscPage, 6, false)
 
 local EmoteInputFrame = Instance.new("Frame")
 EmoteInputFrame.Size = UDim2.new(1, -30, 0, 36)
@@ -1556,7 +1587,7 @@ local function UnloadScript()
             pcall(function() ESPTable[player].NameGui:Destroy() end)
         end
     end
-    print("【系統】7imgoat 已安全卸載。")
+    print("【系統】SLC V1 已安全卸載。")
 end
 ExitBtn.MouseButton1Click:Connect(UnloadScript)
 
@@ -1569,10 +1600,10 @@ MainFrame.Visible = true
 -- 🌟 獨立新增：進階霧氣、超強世界變色與第三視角邏輯
 -- ==========================================
 -- 自動建立一個色彩濾鏡，用來覆蓋整個世界
-local ColorFilter = game.Lighting:FindFirstChild("7imgoat_WorldFilter")
+local ColorFilter = game.Lighting:FindFirstChild("SLC_WorldFilter")
 if not ColorFilter then
     ColorFilter = Instance.new("ColorCorrectionEffect")
-    ColorFilter.Name = "7imgoat_WorldFilter"
+    ColorFilter.Name = "SLC_WorldFilter"
     ColorFilter.Parent = game.Lighting
 end
 
