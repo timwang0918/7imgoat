@@ -203,7 +203,7 @@ local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 40)
 Title.BackgroundColor3 = Color3.fromRGB(22, 24, 33)
 Title.BorderSizePixel = 0
-Title.Text = "   SLC V1"
+Title.Text = "7imgoat"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.Font = Enum.Font.SourceSansBold
@@ -1587,7 +1587,7 @@ local function UnloadScript()
             pcall(function() ESPTable[player].NameGui:Destroy() end)
         end
     end
-    print("【系統】SLC V1 已安全卸載。")
+    print("【系統】7imgoat 已安全卸載。")
 end
 ExitBtn.MouseButton1Click:Connect(UnloadScript)
 
